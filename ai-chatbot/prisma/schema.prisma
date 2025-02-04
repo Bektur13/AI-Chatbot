@@ -1,0 +1,73 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())        // Primary key with UUID
+  fullname  String                              // User's full name
+  clerkId   String?                             // Optional Clerk ID
+  type      String                              // User type (e.g., admin, customer)
+  createdAt DateTime @default(now())            // Auto-set creation date
+  updatedAt DateTime @updatedAt                 // Auto-updated timestamp
+  stripeId  String?                             // Optional Stripe ID
+
+  // Example relationships (adjust based on your diagram)
+  posts     Post[]                              // One-to-many relationship (User has many Posts)
+  orders    Order[]                             // User can have many Orders
+}
+
+model Billings {
+  id      String
+  plans   Plan[]
+  credits Int
+  userId  String
+  user    User    @relation(fields: [userId], references: [id])
+}
+
+model Campaign {
+  id        String
+  name      String
+  customers String[]
+  userId    String
+  createdAt DateTime
+  user      User  @relation(fields: [userId, createdAt], references: [id, createdAt])
+}
+
+model Domain {
+  
+}
+
+model Post {
+  id       Int    @id @default(autoincrement())
+  title    String
+  content  String
+  authorId Int
+  author   User   @relation(fields: [authorId], references: [id])
+}
+
+model playing_with_neon {
+  id    Int    @id @default(autoincrement())
+  name  String
+  value Float? @db.Real
+}
+
+model posts {
+  id        Int     @id @default(autoincrement())
+  title     String? @db.VarChar(255)
+  content   String?
+  author_id Int?
+  users     users?  @relation(fields: [author_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model users {
+  id       Int     @id @default(autoincrement())
+  name     String? @db.VarChar(255)
+  email    String? @unique @db.VarChar(255)
+  password String? @db.VarChar(255)
+  posts    posts[]
+}
