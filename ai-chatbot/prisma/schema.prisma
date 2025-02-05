@@ -1,3 +1,5 @@
+
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -7,67 +9,122 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id        String   @id @default(uuid())        // Primary key with UUID
-  fullname  String                              // User's full name
-  clerkId   String?                             // Optional Clerk ID
-  type      String                              // User type (e.g., admin, customer)
-  createdAt DateTime @default(now())            // Auto-set creation date
-  updatedAt DateTime @updatedAt                 // Auto-updated timestamp
-  stripeId  String?                             // Optional Stripe ID
 
-  // Example relationships (adjust based on your diagram)
-  posts     Post[]                              // One-to-many relationship (User has many Posts)
-  orders    Order[]                             // User can have many Orders
+// Models
+model User {
+  id        String   @id @default(uuid())
+  fullname  String
+  clerkId   String
+  type      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  stripeId  String?
+
+  // Relations
+  billings  Billings[]
+  campaigns Campaign[]
+  domains   Domain[]
 }
 
 model Billings {
-  id      String
-  plans   Plan[]
-  credits Int
-  userId  String
-  user    User    @relation(fields: [userId], references: [id])
+  id       String @id @default(uuid())
+  plan     String
+  credits  Int
+  userId   String
+  user     User   @relation(fields: [userId], references: [id])
 }
 
 model Campaign {
-  id        String
-  name      String
-  customers String[]
-  userId    String
-  createdAt DateTime
-  user      User  @relation(fields: [userId, createdAt], references: [id, createdAt])
+  id         String   @id @default(uuid())
+  name       String
+  customers  String[]
+  userId     String
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id])
+
+  // Relations
+  domains Domain[]
 }
 
 model Domain {
-  
+  id          String   @id @default(uuid())
+  name        String
+  icon        String
+  userId      String
+  campaignId  String
+  user        User     @relation(fields: [userId], references: [id])
+  campaign    Campaign @relation(fields: [campaignId], references: [id])
+
+  // Relations
+  chatbots       Chatbot[]
+  filtersQuestions FiltersQuestions[]
+  customers       Customer[]
+  products        Product[]
+  bookings        Bookings[]
 }
 
-model Post {
-  id       Int    @id @default(autoincrement())
-  title    String
-  content  String
-  authorId Int
-  author   User   @relation(fields: [authorId], references: [id])
+model Chatbot {
+  id              String @id @default(uuid())
+  welcomeMessage  String
+  icon            String
+  background      String
+  textColor       String
+  helpdesk        Boolean
+  domainId        String
+  domain          Domain @relation(fields: [domainId], references: [id])
+
+  // Relations
+  chatMessages ChatMessage[]
 }
 
-model playing_with_neon {
-  id    Int    @id @default(autoincrement())
-  name  String
-  value Float? @db.Real
+model FiltersQuestions {
+  id         String @id @default(uuid())
+  question   String
+  answer     String
+  demand     String
+  domainId   String
+  domain     Domain @relation(fields: [domainId], references: [id])
 }
 
-model posts {
-  id        Int     @id @default(autoincrement())
-  title     String? @db.VarChar(255)
-  content   String?
-  author_id Int?
-  users     users?  @relation(fields: [author_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+model Customer {
+  id        String @id @default(uuid())
+  email     String
+  demand    String
+  domainId  String
+  domain    Domain @relation(fields: [domainId], references: [id])
+
+  // Relations
+  bookings Bookings[]
 }
 
-model users {
-  id       Int     @id @default(autoincrement())
-  name     String? @db.VarChar(255)
-  email    String? @unique @db.VarChar(255)
-  password String? @db.VarChar(255)
-  posts    posts[]
+model Product {
+  id          String   @id @default(uuid())
+  name        String
+  price       Int
+  image       String
+  createdAt   DateTime @default(now())
+  domainId    String
+  domain      Domain @relation(fields: [domainId], references: [id])
+}
+
+model Bookings {
+  id        String   @id @default(uuid())
+  date      DateTime
+  email     String
+  customerId String
+  domainId  String
+  createdAt DateTime @default(now())
+  domain    Domain @relation(fields: [domainId], references: [id])
+  customer  Customer @relation(fields: [customerId], references: [id])
+}
+
+model ChatMessage {
+  id            String   @id @default(uuid())
+  message       String
+  role          String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  chatRoomId    String
+  seen          Boolean
+  chatRoom      Chatbot  @relation(fields: [chatRoomId], references: [id])
 }
