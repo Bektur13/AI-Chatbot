@@ -1,4 +1,3 @@
-import { Calendar, Home, Inbox, Search, Settings } from "lucide-react"
 import DashboardIcon from "@/app/icons/dashboard-icon"
 import ChatIcon from "@/app/icons/chat-icon" 
 import IntegrationsIcon from "@/app/icons/integrations-icon"
