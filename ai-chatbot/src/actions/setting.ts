@@ -8,6 +8,7 @@ export const onIntegrateDomain = async (domain: string, icon: string) => {
 
   try {
     // TODO: Fetch the user's subscription and count their current domains.
+    // Fetching the user's subscription and count their current domains.
     const userSubscription = await prisma.campaign.findFirst({
         where: {userId: user.id},
     });
@@ -21,6 +22,7 @@ export const onIntegrateDomain = async (domain: string, icon: string) => {
     });
 
     // TODO: Check if the domain already exists.
+    // Checking if the domain already exists.
     const existingDomain = await prisma.domain.findFirst({
         where: {name: domain},
     });
@@ -30,6 +32,7 @@ export const onIntegrateDomain = async (domain: string, icon: string) => {
     };
 
     // TODO: Check the subscription plan and enforce limits.
+    // Checking the subscription plan and enforce limits.
     const domainLimit = await userSubscription.name == "premuim" ? 10 : 1;
     if(userDomainsCount >= domainLimit) {
       return {status: 403, message: "Domain limit exceeded"};
@@ -37,6 +40,7 @@ export const onIntegrateDomain = async (domain: string, icon: string) => {
     
 
     // TODO: Create a new domain entry and link it to the user.
+    // Creating a new domain entry and link it to the user.
     await prisma.domain.create({
       data: {
         name: domain,
