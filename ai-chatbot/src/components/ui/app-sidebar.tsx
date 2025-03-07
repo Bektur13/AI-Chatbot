@@ -17,6 +17,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import DomainMenu from "../sidebar/domain-menu"
 
 // Menu items.
 const items = [
@@ -70,6 +71,7 @@ export default function AppSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
+              <DomainMenu />
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

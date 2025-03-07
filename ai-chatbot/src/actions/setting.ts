@@ -1,3 +1,21 @@
+//import { db } from "@/lib/db"; // Ensure this is your NeonDB connection
+
+// export async function onIntegrateDomain(domain: string, icon: string) {
+//   try {
+//     const result = await db.domain.create({
+//       data: { name: domain, icon },
+//     });
+
+//     return { status: 200, message: "Domain added successfully", domain: result };
+//   } catch (error) {
+//     console.error("Error adding domain:", error);
+//     return { status: 500, message: "Failed to add domain" };
+//   }
+// }
+ 
+
+
+
 "use server";
 import { currentUser } from "@clerk/nextjs/server"; // Fetch the current authenticated user
 import { prisma } from "@/lib/prisma"; // Prisma client for database operations

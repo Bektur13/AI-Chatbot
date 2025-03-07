@@ -78,7 +78,7 @@ const upload = new UploadClient({
 
 export const useDomain = () => {
   // ✅ Explicitly define form types
-  const { register, handleSubmit, formState: { errors }, reset } = useForm<AddDomainSchemaType>({
+  const { register, setValue, handleSubmit, formState: { errors }, reset } = useForm<AddDomainSchemaType>({
     resolver: zodResolver(AddDomainSchema), // Use correct Zod schema
   });
 
@@ -123,5 +123,5 @@ export const useDomain = () => {
     }
   });
 
-  return { register, onAddDomain, errors, loading, isDomain };
+  return { register, setValue, onAddDomain, errors, loading, isDomain };
 };
